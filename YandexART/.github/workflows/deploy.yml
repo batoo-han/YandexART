@@ -1,0 +1,44 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Ubuntu Server
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+          echo "🚀 Начинаем деплой YandexART..."
+          
+          # Переходим в директорию приложения
+          cd /opt/yandexart
+          
+          # Останавливаем приложение
+          sudo systemctl stop yandexart || true
+          
+          # Обновляем код
+          git fetch origin
+          git reset --hard origin/main
+          
+          # Обновляем зависимости
+          source venv/bin/activate
+          pip install -r requirements.txt
+          
+          # Создаем базу данных (если не существует)
+          python create_db.py || true
+          
+          # Запускаем приложение
+          sudo systemctl start yandexart
+          
+          # Проверяем статус
+          sudo systemctl status yandexart
+          
+          echo "✅ Деплой завершен успешно!" 

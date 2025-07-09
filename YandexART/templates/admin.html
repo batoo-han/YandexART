@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+
+{% block title %}Админ-панель - YandexART{% endblock %}
+
+{% block extra_styles %}
+<style>
+:root {
+    --sidebar-width: 70px;
+}
+.layout {
+    display: flex;
+    min-height: calc(100vh - 70px);
+    background: var(--bg-primary);
+    padding-left: var(--sidebar-width);
+}
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-secondary);
+    border-right: 1.5px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 0 0 0;
+    box-shadow: var(--shadow);
+    z-index: 200;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    height: calc(100vh - 70px);
+    transition: width 0.2s;
+}
+.sidebar .sidebar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: color 0.2s, background 0.2s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    position: relative;
+    width: 100%;
+    padding: 10px 0;
+}
+.sidebar .sidebar-btn svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 2px;
+    display: block;
+    transition: filter 0.2s;
+}
+.sidebar .sidebar-btn:hover,
+.sidebar .sidebar-btn.active {
+    color: var(--accent-color);
+    background: var(--bg-primary);
+}
+.sidebar .sidebar-btn .tooltip {
+    display: none;
+    position: absolute;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--accent-color);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    white-space: nowrap;
+    box-shadow: var(--shadow);
+    z-index: 100;
+}
+.sidebar .sidebar-btn:hover .tooltip {
+    display: block;
+}
+.chats-drawer {
+    position: fixed;
+    top: 70px;
+    left: var(--sidebar-width);
+    width: 320px;
+    height: calc(100vh - 70px);
+    background: var(--bg-secondary);
+    box-shadow: 2px 0 16px 0 rgba(60,60,100,0.10);
+    border-right: 1.5px solid var(--border-color);
+    z-index: 20;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0 0 0;
+}
+.chats-drawer.open {
+    transform: translateX(0);
+}
+.chats-drawer h3 {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin: 0 0 18px 24px;
+}
+.chats-drawer .chat-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 12px 12px 24px;
+}
+.chats-drawer .chat-item {
+    padding: 12px 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.chats-drawer .chat-item:hover {
+    background: var(--accent-color);
+    color: #fff;
+}
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    min-height: calc(100vh - 70px);
+    background: var(--bg-primary);
+}
+.admin-area {
+    width: 100%;
+    max-width: 900px;
+    margin: 32px 0 0 0;
+    background: none;
+}
+.admin-title {
+    font-size: 2em;
+    font-weight: 800;
+    color: var(--accent-color);
+    margin-bottom: 24px;
+    text-align: left;
+    letter-spacing: 1px;
+}
+.admin-title-bar {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: var(--bg-secondary);
+    border-bottom: 1.5px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    box-shadow: 0 2px 8px 0 rgba(60,60,100,0.04);
+}
+.admin-title-header {
+    font-size: 1.25em;
+    font-weight: 800;
+    color: var(--accent-color);
+    letter-spacing: 1px;
+    text-align: center;
+}
+.stats-bar {
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--bg-secondary);
+    border-top: 1.5px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 24px;
+    padding: 8px 32px 12px 0;
+    box-shadow: 0 -2px 12px 0 rgba(60,60,100,0.07);
+}
+.stats-bar .btn-cleanup {
+    margin-left: 32px;
+    background: linear-gradient(135deg, #ff47c6 0%, #6c47ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-small);
+    padding: 8px 18px;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 2px 12px 0 rgba(255,71,198,0.13);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    outline: none;
+    cursor: pointer;
+}
+.stats-bar .btn-cleanup:hover {
+    background: linear-gradient(135deg, #6c47ff 0%, #ff47c6 100%);
+    box-shadow: 0 4px 24px 0 rgba(108,71,255,0.18);
+    transform: scale(1.04);
+}
+body {
+    padding-top: 114px;
+    padding-bottom: 64px;
+}
+@media (max-width: 900px) {
+    .stats-bar { padding-right: 10px; }
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+.admin-table th, .admin-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+.admin-table th {
+    background: var(--bg-secondary);
+    color: var(--accent-color);
+    font-weight: 700;
+}
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+.admin-table .btn {
+    margin-right: 8px;
+    background: linear-gradient(135deg, #6c47ff 0%, #ff47c6 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-small);
+    padding: 8px 18px;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 2px 12px 0 rgba(108,71,255,0.13);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    outline: none;
+}
+.admin-table .btn:hover {
+    background: linear-gradient(135deg, #ff47c6 0%, #6c47ff 100%);
+    box-shadow: 0 4px 24px 0 rgba(255,71,198,0.18);
+    transform: scale(1.04);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layout">
+    <nav class="sidebar">
+        <a href="{{ url_for('chat_list') }}" class="sidebar-btn" title="К чатам">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="2"/><path d="M7 9h10M7 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="tooltip">Чаты</span>
+        </a>
+        <a href="{{ url_for('admin_panel') }}" class="sidebar-btn" title="Админ-панель">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 4v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="tooltip">Админ</span>
+        </a>
+        <a href="{{ url_for('admin_users') }}" class="sidebar-btn" title="Пользователи">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="tooltip">Пользователи</span>
+        </a>
+        <a href="{{ url_for('logout') }}" class="sidebar-btn" title="Выйти">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="tooltip">Выйти</span>
+        </a>
+    </nav>
+    <div class="chats-drawer" id="chatsDrawer">
+        <h3>Мои чаты</h3>
+        <div class="chat-list" id="drawerChatList">
+            {% for chat in chats %}
+                <a class="chat-item" href="{{ url_for('chat', chat_id=chat.id) }}">
+                    {{ chat.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="admin-title-bar">
+        <span class="admin-title-header">⚙️ Админ-панель</span>
+    </div>
+    <main class="admin-main">
+        <div class="admin-area">
+            <h3>Пользователи</h3>
+            <table class="admin-table">
+                <tr>
+                    <th>ID</th>
+                    <th>Имя</th>
+                    <th>Email</th>
+                    <th>Чатов</th>
+                    <th>Дата регистрации</th>
+                    <th>Действия</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.chats|length }}</td>
+                    <td>{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Удалить пользователя?')">Удалить</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <h3>Чаты</h3>
+            <table class="admin-table">
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Название</th>
+                    <th>Сообщений</th>
+                    <th>Создан</th>
+                    <th>Действия</th>
+                </tr>
+                {% for chat in chats %}
+                <tr>
+                    <td>{{ chat.id }}</td>
+                    <td>{{ chat.user.username }}</td>
+                    <td>{{ chat.name }}</td>
+                    <td>{{ chat.messages|length }}</td>
+                    <td>{{ chat.created_at.strftime('%d.%m.%Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('chat', chat_id=chat.id) }}" class="btn btn-primary btn-sm">Открыть</a>
+                        <a href="{{ url_for('admin_delete_chat', chat_id=chat.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Удалить чат?')">Удалить</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </main>
+</div>
+<div class="stats-bar" id="statsBar">
+    <span>Запросов: {{ stats.requests_today }}/{{ stats.requests_limit }}</span>
+    <span>БД: {{ stats.db_size_mb }} МБ</span>
+    <form method="post" action="{{ url_for('admin_cleanup') }}" style="display:inline;">
+        <button type="submit" class="btn-cleanup" onclick="return confirm('Очистить старые чаты и сообщения?')">Очистить старые чаты</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Sidebar drawer logic
+    const chatsDrawer = document.getElementById('chatsDrawer');
+    const toggleChatsBtn = document.getElementById('toggleChatsBtn');
+    let drawerOpen = false;
+    toggleChatsBtn.onclick = function() {
+        drawerOpen = !drawerOpen;
+        chatsDrawer.classList.toggle('open', drawerOpen);
+    };
+</script>
+{% endblock %} 

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+instance/
+*.db
+*.sqlite3
+.env
+test_generate.py
+*.md 

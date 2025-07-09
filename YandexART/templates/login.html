@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Вход - YandexART{% endblock %}
+
+{% block extra_styles %}
+<style>
+.centered-form {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-card {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 40px 32px 32px 32px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.7s;
+}
+.login-card h2 {
+    margin-bottom: 25px;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+.login-card form {
+    margin-bottom: 15px;
+}
+.login-card .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.login-card .form-control {
+    font-size: 1.1em;
+    padding: 12px;
+}
+.login-card .btn-primary {
+    width: 100%;
+    font-size: 1.1em;
+    padding: 14px;
+    margin-top: 10px;
+}
+.login-card .btn-success {
+    width: 100%;
+    font-size: 1.1em;
+    padding: 12px;
+    margin-top: 10px;
+}
+.login-card .switch-link {
+    display: block;
+    margin-top: 18px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.login-card .switch-link:hover {
+    color: var(--text-primary);
+}
+.login-btn, .register-btn {
+    width: 100%;
+    background: linear-gradient(90deg, #6c47ff 0%, #ff47c6 100%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 0;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px 0 rgba(108,71,255,0.13);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    outline: none;
+    display: block;
+}
+.login-btn:hover, .register-btn:hover {
+    background: linear-gradient(90deg, #ff47c6 0%, #6c47ff 100%);
+    box-shadow: 0 4px 24px 0 rgba(255,71,198,0.18);
+    transform: scale(1.04);
+}
+.register-btn {
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="centered-form">
+    <div class="login-card">
+        <h2>🔐 Вход</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn login-btn">Войти</button>
+        </form>
+        <a href="{{ url_for('register') }}" class="btn register-btn">Зарегистрироваться</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %} 

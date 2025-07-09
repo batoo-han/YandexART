@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация - YandexART{% endblock %}
+
+{% block extra_styles %}
+<style>
+.centered-form {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.register-card {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 40px 32px 32px 32px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.7s;
+}
+.register-card h2 {
+    margin-bottom: 25px;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+.register-card form {
+    margin-bottom: 15px;
+}
+.register-card .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.register-card .form-control {
+    font-size: 1.1em;
+    padding: 12px;
+}
+.register-card .btn-primary {
+    width: 100%;
+    font-size: 1.1em;
+    padding: 14px;
+    margin-top: 10px;
+}
+.register-card .btn-success {
+    width: 100%;
+    font-size: 1.1em;
+    padding: 12px;
+    margin-top: 10px;
+}
+.register-card .switch-link {
+    display: block;
+    margin-top: 18px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.register-card .switch-link:hover {
+    color: var(--text-primary);
+}
+.alert-success {
+    background: #2ecc40;
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 0;
+    margin-top: 18px;
+    font-weight: 600;
+    font-size: 1.08em;
+    box-shadow: 0 2px 12px 0 rgba(46,204,64,0.13);
+    border: none;
+    animation: fadeIn 0.7s;
+}
+.alert-danger {
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 0;
+    margin-top: 18px;
+    font-weight: 600;
+    font-size: 1.08em;
+    box-shadow: 0 2px 12px 0 rgba(231,76,60,0.13);
+    border: none;
+    animation: fadeIn 0.7s;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="centered-form">
+    <div class="register-card">
+        <h2>📝 Регистрация</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </form>
+        <a href="{{ url_for('login') }}" class="btn btn-success switch-link">Войти</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if 'успешн' in message.lower() %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %} 

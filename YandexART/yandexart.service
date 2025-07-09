@@ -1,0 +1,17 @@
+[Unit]
+Description=YandexART Flask Application
+After=network.target
+
+[Service]
+Type=exec
+User=yandexart
+Group=yandexart
+WorkingDirectory=/opt/yandexart
+Environment=PATH=/opt/yandexart/venv/bin
+ExecStart=/opt/yandexart/venv/bin/gunicorn --bind 127.0.0.1:5000 --workers 4 --timeout 120 app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target 

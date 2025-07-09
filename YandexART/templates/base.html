@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}YandexART{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <style>
+        :root {
+            --bg-primary: #f6f7fb;
+            --bg-secondary: #fff;
+            --text-primary: #222;
+            --text-secondary: #888;
+            --accent-color: #6c47ff;
+            --danger-color: #e74c3c;
+            --success-color: #27ae60;
+            --border-color: #e0e0e0;
+            --border-radius: 16px;
+            --border-radius-small: 8px;
+            --shadow: 0 4px 24px 0 rgba(60,60,100,0.08);
+            --shadow-hover: 0 8px 32px 0 rgba(60,60,100,0.13);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #404040;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+            --accent-color: #4dabf7;
+            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #51cf66;
+            --success-gradient: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            --danger-color: #ff6b6b;
+            --danger-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            --warning-color: #ffd43b;
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --shadow: 0 2px 10px rgba(0,0,0,0.3);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            padding-top: 114px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            border-radius: 1px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-toggle {
+            background: linear-gradient(135deg, #6c47ff 0%, #ff47c6 100%);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+            margin-left: auto;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px) scale(1.08);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--border-radius-small);
+            margin: 20px 0;
+            border-left: 4px solid;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: none; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: var(--bg-primary);
+            border-bottom: 2px solid var(--accent-color);
+            box-shadow: 0 2px 16px 0 rgba(60,60,100,0.07);
+            display: flex;
+            align-items: center;
+            height: 70px;
+            padding-left: 32px;
+            padding-right: 32px;
+            animation: fadeIn 0.7s;
+        }
+        .logo-block {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex: 0 0 auto;
+            min-width: 0;
+        }
+        .header-center {
+            flex: 1 1 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 0;
+        }
+        .logo-text {
+            font-size: 2.1em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #6c47ff 0%, #ff47c6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(108,71,255,0.08);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        }
+        .logo-art {
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #ff47c6 0%, #6c47ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        .chat-title-header {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--accent-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 600px;
+            text-align: center;
+        }
+        .chat-title-bar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-bottom: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+            box-shadow: 0 2px 8px 0 rgba(60,60,100,0.04);
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo-block">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="paint0_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#6c47ff"/>
+                        <stop offset="1" stop-color="#ff47c6"/>
+                    </linearGradient>
+                </defs>
+                <ellipse cx="24" cy="24" rx="20" ry="16" fill="url(#paint0_linear)"/>
+                <circle cx="17" cy="22" r="3" fill="#fff"/>
+                <circle cx="24" cy="18" r="2.2" fill="#fff"/>
+                <circle cx="31" cy="25" r="2.5" fill="#fff"/>
+                <rect x="34" y="34" width="7" height="4" rx="2" transform="rotate(30 34 34)" fill="#fff"/>
+                <rect x="36" y="36" width="7" height="2" rx="1" transform="rotate(30 36 36)" fill="#ff47c6"/>
+            </svg>
+            <span class="logo-text">Yandex<span class="logo-art">ART</span></span>
+        </div>
+        <button class="theme-toggle" id="themeToggleBtn" title="Сменить тему">
+            <span id="themeIcon">🌙</span>
+        </button>
+    </header>
+
+    {% if chat %}
+    <div class="chat-title-bar">
+        <span class="chat-title-header">{{ chat.name }}</span>
+    </div>
+    {% endif %}
+
+    <div class="container fade-in">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        // Тема
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        function setTheme(dark) {
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+            themeIcon.textContent = dark ? '☀️' : '🌙';
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+        }
+        if (themeBtn) {
+            themeBtn.onclick = () => setTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+            // При загрузке
+            const saved = localStorage.getItem('theme');
+            if (saved) setTheme(saved === 'dark');
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html> 
