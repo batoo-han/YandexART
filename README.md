@@ -137,10 +137,12 @@ jobs:
 
 2. **Скачайте и запустите скрипт деплоя:**
    ```bash
-   wget https://raw.githubusercontent.com/YOUR_USERNAME/YandexART/main/YandexART/deploy.sh
-   chmod +x deploy.sh
-   sudo ./deploy.sh
+   wget https://raw.githubusercontent.com/YOUR_USERNAME/YandexART/main/YandexART/deploy-unix.sh
+   chmod +x deploy-unix.sh
+   sudo ./deploy-unix.sh
    ```
+   
+   **Примечание:** Если возникает ошибка `Syntax error: newline unexpected`, используйте `deploy-unix.sh` вместо `deploy.sh` или исправьте окончания строк командой `dos2unix deploy.sh`.
 
 3. **Настройте переменные окружения:**
    ```bash
