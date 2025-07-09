@@ -37,7 +37,7 @@ git push origin main
 ssh user@your-server-ip
 
 # Скачиваем и запускаем скрипт
-wget https://raw.githubusercontent.com/YOUR_USERNAME/YandexART/main/YandexART/deploy.sh
+wget https://raw.githubusercontent.com/batoo-han/YandexART/master/YandexART/deploy-unix.sh
 chmod +x deploy.sh
 sudo ./deploy.sh
 ```

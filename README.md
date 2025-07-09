@@ -137,7 +137,7 @@ jobs:
 
 2. **Скачайте и запустите скрипт деплоя:**
    ```bash
-   wget https://raw.githubusercontent.com/YOUR_USERNAME/YandexART/main/YandexART/deploy-unix.sh
+   wget https://raw.githubusercontent.com/batoo-han/YandexART/master/YandexART/deploy-unix.sh
    chmod +x deploy-unix.sh
    sudo ./deploy-unix.sh
    ```

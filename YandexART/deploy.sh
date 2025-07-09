@@ -34,13 +34,13 @@ sudo chown yandexart:yandexart /opt/yandexart
 # Клонируем репозиторий (замените на ваш URL)
 echo "📥 Клонируем репозиторий..."
 cd /opt/yandexart
-sudo -u yandexart git clone https://github.com/YOUR_USERNAME/YandexART.git . || true
+sudo -u yandexart git clone https://github.com/batoo-han/YandexART.git . || true
 
 # Создаем виртуальное окружение
 echo "🐍 Создаем виртуальное окружение..."
 sudo -u yandexart python3 -m venv venv
 sudo -u yandexart venv/bin/pip install --upgrade pip
-sudo -u yandexart venv/bin/pip install -r requirements.txt
+sudo -u yandexart venv/bin/pip install -r requirements-prod.txt
 
 # Создаем .env файл
 echo "⚙️  Создаем .env файл..."
