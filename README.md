@@ -305,8 +305,8 @@ sudo systemctl restart yandexart
 ---
 
 ## 👨‍💻 Авторы и поддержка
-- Telegram: @your_nick
-- Issues: github.com/yourrepo/issues
+- Telegram: @batoohan
+- Issues: https://github.com/batoo-han/YandexART/issues
 
 ---
 
